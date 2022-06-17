@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import java.time.Duration;
+
 public class Automation3_1 {
   static public WebDriver driver;
 
@@ -26,6 +28,7 @@ public class Automation3_1 {
     String expectedTeslaModels = "Tesla Model S";
 
     driver = new ChromeDriver();
+    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
     driver.manage().window().maximize();
     driver.get(website);
 
@@ -34,7 +37,6 @@ public class Automation3_1 {
     Select modelTypeSelects = new Select(getElementByXPath("//select[@id='models']"));
     Select maxPriceTypeSelects = new Select(getElementByXPath("//select[@id='make-model-max-price']"));
     Select distanceTypeSelects = new Select(getElementByXPath("//select[@id='make-model-maximum-distance']"));
-
 
     String selectedStockType = getFirstSelectedOption(stockTypeSelects);
     String selectedMakeType = getFirstSelectedOption(makeTypeSelects);
@@ -56,9 +58,6 @@ public class Automation3_1 {
 
     stockTypeSelects.selectByIndex(3);
     makeTypeSelects.selectByValue("tesla");
-
-    Thread.sleep(randNumber(500, 729));
-
     modelTypeSelects = new Select(getElementByXPath("//select[@id='models']"));
 
     List<WebElement> modelTypeSelectList = modelTypeSelects.getOptions();
@@ -68,25 +67,17 @@ public class Automation3_1 {
     }
 
     modelTypeSelects.selectByIndex(2);
-    Thread.sleep(randNumber(300, 400));
     maxPriceTypeSelects.selectByValue("100000");
-    Thread.sleep(randNumber(300, 400));
     distanceTypeSelects.selectByValue("50");
-    Thread.sleep(randNumber(300, 400));
     clearElementById("make-model-zip");
-    Thread.sleep(randNumber(300, 400));
     sendKeysElementById("make-model-zip", "22182");
-    Thread.sleep(randNumber(300, 400));
-
     clickElementByXPath("//button[@data-searchtype='make']");
 
-    Thread.sleep(randNumber(3005, 4000));
+    Thread.sleep(250);
 
     List<WebElement> searchResults = getElementsByXPath("//div[@data-tracking-type='srp-vehicle-card']");
 
-    Thread.sleep(randNumber(333, 555));
-
-    Assert.assertEquals(String.valueOf(searchResults.size()), "20");
+    Assert.assertEquals(String.valueOf(searchResults.size()), "19");
 
     Select sortSelects = new Select(getElementById("sort-dropdown"));
     List<Integer> carPrices = new ArrayList<>();
@@ -94,7 +85,7 @@ public class Automation3_1 {
     List<Integer> carDistance = new ArrayList<>();
     List<Integer> carYears = new ArrayList<>();
 
-    Thread.sleep(randNumber(444, 667));
+    Thread.sleep(500);
 
     for(WebElement eachSearchResult : searchResults){
       String carTitle = eachSearchResult.findElement(By.className("vehicle-card-visited-tracking-link")).getAttribute("aria-label");
@@ -105,11 +96,9 @@ public class Automation3_1 {
 
     sortSelects.selectByIndex(1);
 
-    Thread.sleep(randNumber(1500, 3400));
+    Thread.sleep(500);
 
     searchResults = getElementsByXPath("//div[@data-tracking-type='srp-vehicle-card']");
-
-    Thread.sleep(randNumber(643, 994));
 
     for(WebElement eachSearchResult : searchResults) {
       Integer currentCarPrice = Integer.valueOf(eachSearchResult.findElement(By.className("primary-price")).getText().split("\\$")[1].replace(",", ""));
@@ -127,15 +116,11 @@ public class Automation3_1 {
 
     // check highest mileage
 
-    Thread.sleep(randNumber(1500, 3400));
-
     sortSelects.selectByIndex(4);
 
-    Thread.sleep(randNumber(1500, 3400));
+    Thread.sleep(500);
 
     searchResults = getElementsByXPath("//div[@data-tracking-type='srp-vehicle-card']");
-
-    Thread.sleep(randNumber(643, 994));
 
     for(WebElement eachSearchResult : searchResults) {
       Integer currentCarMile = Integer.valueOf(eachSearchResult.findElement(By.className("mileage")).getText().split(" ")[0].replace(",", ""));
@@ -153,15 +138,11 @@ public class Automation3_1 {
 
     // check nearest location
 
-    Thread.sleep(randNumber(1500, 3400));
-
     sortSelects.selectByIndex(5);
 
-    Thread.sleep(randNumber(1500, 3400));
+    Thread.sleep(500);
 
     searchResults = getElementsByXPath("//div[@data-tracking-type='srp-vehicle-card']");
-
-    Thread.sleep(randNumber(643, 994));
 
     for(WebElement eachSearchResult : searchResults) {
       String distance = eachSearchResult.findElement(By.cssSelector(".miles-from, .online-seller")).getText();
@@ -183,21 +164,16 @@ public class Automation3_1 {
 
     // check oldest year
 
-    Thread.sleep(randNumber(1500, 3400));
-
     sortSelects.selectByIndex(8);
 
-    Thread.sleep(randNumber(1500, 3400));
+    Thread.sleep(1500);
 
     searchResults = getElementsByXPath("//div[@data-tracking-type='srp-vehicle-card']");
-
-    Thread.sleep(randNumber(643, 994));
 
     for(WebElement eachSearchResult : searchResults) {
       String carTitle = eachSearchResult.findElement(By.className("vehicle-card-visited-tracking-link")).getAttribute("aria-label");
 
       carYears.add(Integer.valueOf(carTitle.split(" ")[0]));
-
     }
 
     Collections.sort(carYears);
@@ -241,9 +217,4 @@ public class Automation3_1 {
     return selectElement.getFirstSelectedOption().getText();
   }
 
-  public static int randNumber(int min, int max) {
-    return (int) ((Math.random() * (max - min)) + min);
-  }
-
 }
-
